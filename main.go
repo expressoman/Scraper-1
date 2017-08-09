@@ -81,8 +81,6 @@ func extractImages(body string, downloadFolder string) {
 	var endOfObjectLocationSingleQuote int
 	var endOfObjectLocationDoubleQuote int
 
-	//img.yt/
-
 	startOfObjectLocation = lookForNextObjectTag(body)
 
 	for startOfObjectLocation != -1 {
@@ -119,6 +117,11 @@ func initialiseObjectReferences() {
 	referenceObjects = append(referenceObjects, findObject{initialCapture: "imagevenue.com/img.php?", prefix:"https://"})
 	referenceObjects = append(referenceObjects, findObject{initialCapture: "hifiwigwam.com/"})
 	referenceObjects = append(referenceObjects, findObject{initialCapture: "picbux.com/image.php?id=", prefix:"https://"})
+	referenceObjects = append(referenceObjects, findObject{initialCapture: "picturesupload.com/show.php/", prefix:"https://"})
+	referenceObjects = append(referenceObjects, findObject{initialCapture: "imagehigh.com/", prefix:"https://"})
+	referenceObjects = append(referenceObjects, findObject{initialCapture: "image2share.com/", prefix:"https://"})
+	referenceObjects = append(referenceObjects, findObject{initialCapture: "paintedover.com/uploads/show.php", prefix:"https://"})
+	referenceObjects = append(referenceObjects, findObject{initialCapture: "10pix.com/", prefix:"https://"})
 }
 
 func main() {
