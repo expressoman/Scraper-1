@@ -81,6 +81,8 @@ func extractObjects(body string, downloadFolder string) {
 	var endOfObjectLocationSingleQuote int
 	var endOfObjectLocationDoubleQuote int
 
+	fmt.Println("In Extract Objects")
+
 	startOfObjectLocation = lookForNextObjectTag(body)
 
 	for startOfObjectLocation != -1 {
@@ -124,34 +126,90 @@ func initialiseObjectReferences() {
 	referenceObjects = append(referenceObjects, findObject{initialCapture: "10pix.com/", prefix:"https://"})
 }
 
+func validateEndpoint(endpoint string) (*http.Response, error) {
+
+	var resp *http.Response
+	var err error
+
+	fmt.Println("endpoint passed = ",endpoint)
+
+	if endpoint[1:4] != "http" {
+		fmt.Println("http not found")
+		fmt.Println("trying ","http://" + endpoint)
+
+		resp, err = http.Get("http://" + endpoint)
+
+		if err != nil {
+			// handle error
+			fmt.Println("Error getting web page. Trying https")
+			fmt.Println("http not found")
+			endpoint = "https://" + os.Args[1]
+
+			resp, err = http.Get(endpoint)
+
+			if err != nil {
+				fmt.Println("https not found")
+				return resp, err
+			} else {
+				fmt.Println("success on https")
+				return resp,err
+			}
+		} else {
+			fmt.Println("success on http ", resp.Body)
+			return resp, err
+		}
+
+
+	} else {
+		return http.Get(endpoint)
+	}
+
+
+
+}
+
 func main() {
+
+	//var endpoint string
 
 	downloadFolder := "./"
 
-	initialiseObjectReferences()
+	if len(os.Args) > 1 {
 
-	//resp, err := http.Get("http://www.bbc.co.uk/")
-	resp, err := http.Get("https://hifiwigwam.com/forum/topic/125807-what-does-%C2%A33900-buy-you/")
+		resp, err := validateEndpoint(os.Args[1])
 
-	if err != nil {
-		// handle error
-	}
-	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+		} else {
+			fmt.Println("Going to initialise objects.")
 
-	if err == nil {
-		searchableBody := string(body)
+			initialiseObjectReferences()
 
-		extractObjects(searchableBody, downloadFolder)
-	}
-	/*
-		ioutil.WriteFile("dump", body, 0600)
+			fmt.Println("Initialised objects.")
 
-		for i:= 0; i < len(body); i++ {
-			fmt.Println( body[i] ) // This logs uint8 and prints numbers
+			defer resp.Body.Close()
+			body, err := ioutil.ReadAll(resp.Body)
+
+			fmt.Println("body = ", body)
+
+			if err == nil {
+				searchableBody := string(body)
+
+				extractObjects(searchableBody, downloadFolder)
+			}
+			/*
+			ioutil.WriteFile("dump", body, 0600)
+
+			for i:= 0; i < len(body); i++ {
+				fmt.Println( body[i] ) // This logs uint8 and prints numbers
+			}
+
+			fmt.Println( reflect.TypeOf(body) )
+			fmt.Println("done")
+		*/
 		}
+	} else {
+		fmt.Println("Arg not Supplied")
+	}
 
-		fmt.Println( reflect.TypeOf(body) )
-		fmt.Println("done")
-	*/
+
 }
