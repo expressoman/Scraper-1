@@ -75,7 +75,7 @@ func lookForNextObjectTag(searchableData string) (foundObject int) {
 	return minimumStartOfObjectLocation
 }
 
-func extractImages(body string, downloadFolder string) {
+func extractObjects(body string, downloadFolder string) {
 	var startOfObjectLocation int
 	var endOfObjectLocation int
 	var endOfObjectLocationSingleQuote int
@@ -142,7 +142,7 @@ func main() {
 	if err == nil {
 		searchableBody := string(body)
 
-		extractImages(searchableBody, downloadFolder)
+		extractObjects(searchableBody, downloadFolder)
 	}
 	/*
 		ioutil.WriteFile("dump", body, 0600)
